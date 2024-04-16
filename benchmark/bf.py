@@ -4,7 +4,7 @@ from typing import Iterable
 from scipy.optimize import linear_sum_assignment as lap
 
 
-def set_partitions(L: Iterable, k: int) -> Iterable:
+def set_partitions(L: Iterable, k: int):
     """
     Implements a generator which yields partitions of the set L into k non-empty sets. Based on the
     implementation found in https://github.com/more-itertools/more-itertools
@@ -14,7 +14,7 @@ def set_partitions(L: Iterable, k: int) -> Iterable:
         k: number of non-empty partitions.
 
     Yields:
-        An iterable of k iterables representing partitions of L.
+        A list of k iterables representing partitions of L.
     """
     n = len(L)
     if k == 1:
@@ -47,7 +47,8 @@ def bf(
     the number of workers. We assume that m >= n. The algorithm exhaustively searches over all
     n-partitions of the set of all workers and for each generated partition solves the corresponding
     Linear Assignment Problem (LAP) to optimally assign each group of workers in a partition to a
-    job.
+    job. Time complexity of this algorithm is O( S(m,n) * n**3), where S(m,n) denotes the Stirling
+    number of the 2nd kind.
 
     Args:
         work: Array of work values for each job. Shape (n_jobs,).
