@@ -46,13 +46,13 @@ def bf(
 
     for partition in set_partitions(range(n_workers), n_jobs):
         cost_matrix = np.outer(work, [cost[p].sum() / eta[p].sum() for p in partition])
-        partition_eta = np.array([eta[p].sum() for p in partition])
+        time_matrix = np.outer(work, [1 / eta[p].sum() for p in partition])
 
         X = cp.Variable((n_jobs, n_jobs), boolean=True)
         constraints = [
             X.sum(axis=0) == 1,
             X.sum(axis=1) == 1,
-            X @ (work / partition_eta) <= time,
+            cp.multiply(X, time_matrix).sum(axis=1) <= time,
         ]
 
         problem = cp.Problem(cp.Minimize(cp.multiply(cost_matrix, X).sum()), constraints)
@@ -60,7 +60,7 @@ def bf(
 
         if partition_cost < best_cost:
             best_cost = partition_cost
-            best_assignment = [partition[int(np.where(X.value[i] == 1)[0][0])] for i in range(n_jobs)]
+            best_assignment = [partition[np.where(X.value[i] == 1)[0][0]] for i in range(n_jobs)]
 
     return best_cost, best_assignment
 
