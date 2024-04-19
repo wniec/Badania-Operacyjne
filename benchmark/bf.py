@@ -31,7 +31,8 @@ def bf(
         cost: Array of costs per unit of time for each worker. Shape (n_workers,).
         eta : Array of efficacies (i.e. amount of work a worker can do in unit time) for each
               worker. Shape (n_workers,)
-        solver: Solver used to solve the ILP.
+        solver: Solver used to solve the ILP. Should be one of the: "CPLEX", "GUROBI", "GLPK_MI".
+                Defaults to "CPLEX".
 
     Returns:
         Minimum value of objective and the optimal assignment of workers to jobs as a list of lists
@@ -58,6 +59,9 @@ def bf(
         problem = cp.Problem(cp.Minimize(cp.multiply(cost_matrix, X).sum()), constraints)
         partition_cost = problem.solve(verbose=False, solver=solver)
 
+        if partition_cost < float("inf"):
+            print([partition[np.where(X.value[i] == 1)[0][0]] for i in range(n_jobs)], partition_cost)
+
         if partition_cost < best_cost:
             best_cost = partition_cost
             best_assignment = [partition[np.where(X.value[i] == 1)[0][0]] for i in range(n_jobs)]
@@ -65,9 +69,25 @@ def bf(
     return best_cost, best_assignment
 
 
+def check_solution(
+    work: np.ndarray[float],
+    time: np.ndarray[float],
+    eta: np.ndarray[float],
+    assignment: list[list[int]],
+    n_workers: int,
+):
+    assert all(len(group) > 0 for group in assignment), "There is at least 1 job with no workers"
+    assert all(
+        sum(1 if worker in group else 0 for group in assignment) == 1 for worker in range(n_workers)
+    ), "At least one of the workers is assigned to more than 1 job"
+    assert all(
+        work[i] / sum(eta[worker] for worker in group) <= time[i] for i, group in enumerate(assignment)
+    ), "At least one job takes more time than available"
+
+
 # Example usage
 if __name__ == "__main__":
-    # n_jobs, n_workers = 5, 8
+    n_jobs, n_workers = 5, 6
 
     # JOBS
     work = np.array([10.0, 10.0, 10.0, 1.0, 1.0])
@@ -85,6 +105,7 @@ if __name__ == "__main__":
     print(f"Eta  = {eta}")
 
     best_cost, best_assignment = bf(work, time, cost, eta)
+    check_solution(work, time, eta, best_assignment, n_workers)
 
     print("\nSOLUTION")
     print(f"Best cost = {best_cost:.3f}")
