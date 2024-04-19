@@ -46,7 +46,6 @@ def bf(
     assert (n_jobs := len(work)) <= (n_workers := len(cost)), "Expected n_workers >= n_jobs"
 
     best_cost, best_assignment = float("inf"), None
-    worst_cost = -float("inf")
 
     for partition in tqdm(set_partitions(range(n_workers), n_jobs), total=stirling2(n_workers, n_jobs)):
         cost_matrix = np.outer(work, [cost[p].sum() / eta[p].sum() for p in partition])
@@ -64,12 +63,8 @@ def bf(
 
         if partition_cost < best_cost:
             best_cost = partition_cost
-            best_assignment = [partition[np.where(X.value[i] == 1)[0][0]] for i in range(n_jobs)]
+            best_assignment = [partition[X.value[i].tolist().index(1)] for i in range(n_jobs)]
 
-        if partition_cost < float("inf") and partition_cost > worst_cost:
-            worst_cost = partition_cost
-
-    print("WORST", worst_cost)
     return best_cost, best_assignment
 
 
@@ -91,14 +86,14 @@ def check_solution(
 
 # Example usage
 if __name__ == "__main__":
-    n_jobs, n_workers = 5, 9
+    n_jobs, n_workers = 5, 8
 
     # JOBS
     work = np.random.random(n_jobs)
-    time = np.random.random(n_jobs)
+    time = 0.8 + np.random.random(n_jobs)
     # WORKERS
     cost = np.random.random(n_workers)
-    eta = 1 + np.random.random(n_workers)
+    eta = 0.1 + np.random.random(n_workers)
 
     print("\nJOBS")
     print(f"Work = {work}")
