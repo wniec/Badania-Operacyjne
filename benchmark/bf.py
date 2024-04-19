@@ -1,6 +1,8 @@
 import numpy as np
 import cvxpy as cp
 
+from tqdm import tqdm
+from scipy.special import stirling2
 from more_itertools import set_partitions
 
 
@@ -44,8 +46,9 @@ def bf(
     assert (n_jobs := len(work)) <= (n_workers := len(cost)), "Expected n_workers >= n_jobs"
 
     best_cost, best_assignment = float("inf"), None
+    worst_cost = -float("inf")
 
-    for partition in set_partitions(range(n_workers), n_jobs):
+    for partition in tqdm(set_partitions(range(n_workers), n_jobs), total=stirling2(n_workers, n_jobs)):
         cost_matrix = np.outer(work, [cost[p].sum() / eta[p].sum() for p in partition])
         time_matrix = np.outer(work, [1 / eta[p].sum() for p in partition])
 
@@ -59,13 +62,14 @@ def bf(
         problem = cp.Problem(cp.Minimize(cp.multiply(cost_matrix, X).sum()), constraints)
         partition_cost = problem.solve(verbose=False, solver=solver)
 
-        if partition_cost < float("inf"):
-            print([partition[np.where(X.value[i] == 1)[0][0]] for i in range(n_jobs)], partition_cost)
-
         if partition_cost < best_cost:
             best_cost = partition_cost
             best_assignment = [partition[np.where(X.value[i] == 1)[0][0]] for i in range(n_jobs)]
 
+        if partition_cost < float("inf") and partition_cost > worst_cost:
+            worst_cost = partition_cost
+
+    print("WORST", worst_cost)
     return best_cost, best_assignment
 
 
@@ -87,14 +91,14 @@ def check_solution(
 
 # Example usage
 if __name__ == "__main__":
-    n_jobs, n_workers = 5, 6
+    n_jobs, n_workers = 5, 9
 
     # JOBS
-    work = np.array([10.0, 10.0, 10.0, 1.0, 1.0])
-    time = np.array([4.0, 4.0, 4.0, 3.0, 3.0])
+    work = np.random.random(n_jobs)
+    time = np.random.random(n_jobs)
     # WORKERS
-    cost = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 2.0])
-    eta = np.array([5.0, 3.0, 3.0, 3.0, 3.0, 10.0])
+    cost = np.random.random(n_workers)
+    eta = 1 + np.random.random(n_workers)
 
     print("\nJOBS")
     print(f"Work = {work}")
@@ -105,7 +109,7 @@ if __name__ == "__main__":
     print(f"Eta  = {eta}")
 
     best_cost, best_assignment = bf(work, time, cost, eta)
-    check_solution(work, time, eta, best_assignment, n_workers)
+    check_solution(work, time, eta, best_assignment, n_workers) if best_cost < float("inf") else None
 
     print("\nSOLUTION")
     print(f"Best cost = {best_cost:.3f}")
