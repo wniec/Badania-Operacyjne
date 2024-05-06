@@ -9,7 +9,7 @@ np.set_printoptions(threshold=sys.maxsize)
 
 
 def genSolution(T, M, TEST):
-    print(f"T={T}, M={M}, TEST={TEST}")
+    # print(f"T={T}, M={M}, TEST={TEST}")
     mach = np.random.choice(list(range(M)), size=TEST, replace=False)
     tasks = np.hstack((np.random.RandomState().permutation(T),
                        np.random.choice(list(range(T)), size=TEST-T, replace=True)))
