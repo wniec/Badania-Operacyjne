@@ -1,0 +1,6 @@
+cvxpy>=1.4.3
+gurobipy>=11.0.1
+more-itertools>=10.2.0
+numpy>=1.26.4
+scipy>=1.13.0
+tqdm==4.66.4

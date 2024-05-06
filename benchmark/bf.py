@@ -11,7 +11,7 @@ def bf(
     time: np.ndarray[float],
     cost: np.ndarray[float],
     eta: np.ndarray[float],
-    solver: str = "CPLEX",
+    solver: str = "GUROBI",
 ) -> tuple[float, list[list[int]]]:
     """
     Implements brute-force algorithm to solve the following combinatorial optimization problem
@@ -91,6 +91,8 @@ if __name__ == "__main__":
     # JOBS
     work = np.random.random(n_jobs)
     time = 0.8 + np.random.random(n_jobs)
+
+    work = np.array([])
     # WORKERS
     cost = np.random.random(n_workers)
     eta = 0.1 + np.random.random(n_workers)
