@@ -60,7 +60,7 @@ def bf(
 
         problem = cp.Problem(cp.Minimize(cp.multiply(cost_matrix, X).sum()), constraints)
         partition_cost = problem.solve(verbose=False, solver=solver)
-
+        print(partition_cost)
         if partition_cost < best_cost:
             best_cost = partition_cost
             best_assignment = [partition[X.value[i].tolist().index(1)] for i in range(n_jobs)]
@@ -69,6 +69,7 @@ def bf(
 
 
 def check_solution(
+    cost: float,
     work: np.ndarray[float],
     time: np.ndarray[float],
     eta: np.ndarray[float],
@@ -82,6 +83,9 @@ def check_solution(
     assert all(
         work[i] / sum(eta[worker] for worker in group) <= time[i] for i, group in enumerate(assignment)
     ), "At least one job takes more time than available"
+    assert cost == sum(
+        w * cost[p].sum() / eta[p].sum() for w, p in zip(work, assignment)
+    ), "Cost is incorretct for the given assignment"
 
 
 # Example usage
@@ -97,6 +101,14 @@ if __name__ == "__main__":
     cost = np.random.random(n_workers)
     eta = 0.1 + np.random.random(n_workers)
 
+    n_jobs = 3
+    n_workers = 5
+
+    work = np.array([0.05649429, 0.53109867, 0.86764481])
+    time = np.array([0.53677527, 0.43160818, 0.9047183])
+    cost = np.array([0.42415955, 0.73918663, 0.3058235, 0.6060437, 0.64862661])
+    eta = np.array([0.55492947, 0.35726281, 0.75614558, 0.17878197, 0.95030017])
+
     print("\nJOBS")
     print(f"Work = {work}")
     print(f"Time = {time}")
@@ -111,3 +123,5 @@ if __name__ == "__main__":
     print("\nSOLUTION")
     print(f"Best cost = {best_cost:.3f}")
     print(f"Best assignment = {best_assignment}")
+
+    print()
