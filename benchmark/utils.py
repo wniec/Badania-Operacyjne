@@ -51,7 +51,7 @@ def check_solution(
     if not all(work[i] / sum(effi[worker] for worker in group) <= time[i] for i, group in enumerate(assignment)):
         return CheckStatus.TimeExceeded
 
-    if abs(total_cost - sum(w * cost[group].sum() / effi[group].sum() for w, group in zip(work, assignment))) < eps:
+    if abs(total_cost - sum(w * cost[group].sum() / effi[group].sum() for w, group in zip(work, assignment))) > eps:
         return CheckStatus.CostMismatch
 
     return CheckStatus.Correct
