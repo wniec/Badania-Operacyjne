@@ -34,6 +34,7 @@ def check_solution(
     time: np.ndarray[float],
     cost: np.ndarray[float],
     effi: np.ndarray[float],
+    eps: float = 1e-5,
 ) -> CheckStatus:
     assert all(isinstance(arr, np.ndarray) for arr in (work, time, cost, effi)), "Expected Numpy arrays"
     assert all(len(arr.shape) == 1 for arr in (work, time, cost, effi)), "Expected 1-D arrays"
@@ -50,7 +51,7 @@ def check_solution(
     if not all(work[i] / sum(effi[worker] for worker in group) <= time[i] for i, group in enumerate(assignment)):
         return CheckStatus.TimeExceeded
 
-    if total_cost != sum(w * cost[group].sum() / effi[group].sum() for w, group in zip(work, assignment)):
+    if abs(total_cost - sum(w * cost[group].sum() / effi[group].sum() for w, group in zip(work, assignment))) < eps:
         return CheckStatus.CostMismatch
 
     return CheckStatus.Correct
