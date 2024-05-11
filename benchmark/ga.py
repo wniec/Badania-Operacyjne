@@ -1,7 +1,7 @@
 import numpy as np
 
 from tqdm import tqdm
-from more_itertools import sample, set_partitions
+from utils import sample_partition
 
 
 def ga(
@@ -126,11 +126,8 @@ def ga(
     best_fitness, best_assignment = -float("inf"), None
 
     # Sample initial population and encode candidates as linear arrays
-    population = [
-        sample(set_partitions(range(n_workers), n_jobs), k=1)[0]
-        for _ in tqdm(range(pop_size), desc="Sampling initial population")
-    ]
-    population = [encode(candidate) for candidate in population]
+    population = [sample_partition(n_workers, n_jobs) for _ in tqdm(range(pop_size), desc="Sampling population...")]
+    population = [encode(partition) for partition in population]
 
     for _ in (pbar := tqdm(range(max_iter))):
         # Calculate fitness values for every candidate in population
@@ -142,7 +139,7 @@ def ga(
             best_fitness, best_assignment = best_iter_fitness, best_iter_assignment
 
         # Update progress bar
-        pbar.set_description(f"Best fitness: {best_fitness:.3f}|")
+        pbar.set_description(f"Best fitness: {best_fitness:.3f}")
 
         # Deterministic Binary Tournament selection
         parents = []
