@@ -54,7 +54,7 @@ def ga(
     Returns:
         Value of the cost function including the penalty term (negation of the fitness value) and
         the corresponding assignment of workers to jobs as a list of lists where each i-th list
-        contains workers assigned to i-th job found using the Genetic Algorithm.
+        contains workers assigned to i-th job found using GA.
     """
     assert all(isinstance(arr, np.ndarray) for arr in (work, time, cost, effi)), "Expected Numpy arrays"
     assert all(len(arr.shape) == 1 for arr in (work, time, cost, effi)), "Expected 1-D arrays"
