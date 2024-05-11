@@ -4,7 +4,6 @@ import cvxpy as cp
 from tqdm import tqdm
 from scipy.special import stirling2
 from more_itertools import set_partitions
-from utils import check_solution, CheckStatus
 
 
 def bf(
@@ -70,6 +69,8 @@ def bf(
 
 # Example usage
 if __name__ == "__main__":
+    from utils import check_solution, CheckStatus
+
     work = np.array([0.0564, 0.5310, 0.8676])
     time = np.array([0.5367, 0.4316, 0.9047])
     cost = np.array([0.4241, 0.7391, 0.3058, 0.6060, 0.6486])
