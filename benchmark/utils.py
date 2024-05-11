@@ -1,5 +1,8 @@
 import numpy as np
+
 from enum import Enum, auto
+from typing import Iterable, Generator
+from scipy.special import stirling2
 
 
 class CheckStatus(Enum):
@@ -55,3 +58,61 @@ def check_solution(
         return CheckStatus.CostMismatch
 
     return CheckStatus.Correct
+
+
+def set_partitions(L: Iterable, k: int):
+    """Yields partitions of L into k non-empty sets represented by lists. This implementation
+    was taken from https://github.com/more-itertools/more-itertools.
+
+    Args:
+        L: Any finite iterable of length n >= k representing a set (i.e. order doesn't matter).
+        k: Positive integer defining the number of non-empty partitions of L.
+
+    Yields:
+        Partition of L represented as a list of lists.
+    """
+    n = len(L)
+    if k == 1:
+        yield [L]
+
+    elif n == k:
+        yield [[s] for s in L]
+
+    else:
+        e, *M = L
+
+        for p in set_partitions(M, k - 1):
+            yield [[e], *p]
+
+        for p in set_partitions(M, k):
+            for i in range(len(p)):
+                yield p[:i] + [[e] + p[i]] + p[i + 1 :]
+
+
+def sample_partition(n: int, k: int) -> list[list[int]]:
+    """Implements a simple sampling scheme to sample uniformly a partition of set {0,..,n-1} into k
+    non-empty sets. The explanation of why this scheme works can be found here:
+    https://mathoverflow.net/questions/141999/how-to-efficiently-sample-uniformly-from-the-set-of-p-partitions-of-an-n-set.
+
+    Args:
+        n: Number of elements of the set.
+        k: Number of partitions.
+
+    Returns:
+        Random partition of set {0,..,n-1} into k non-empty sets represented as a list of lists.
+    """
+    assert n >= k >= 1, "Expected n >= k >= 1"
+
+    if k == 1:
+        return [[i for i in range(n)]]
+
+    if k == n:
+        return [[i] for i in range(n)]
+
+    if np.random.random() <= (stirling2(n - 1, k - 1) / stirling2(n, k)):
+        return [[n - 1], *sample_partition(n - 1, k - 1)]
+
+    partition = sample_partition(n - 1, k)
+    partition[np.random.randint(k)].append(n - 1)
+
+    return partition
