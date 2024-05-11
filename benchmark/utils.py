@@ -48,7 +48,7 @@ def check_solution(
     if not all(sum(1 if worker in group else 0 for group in assignment) == 1 for worker in range(n_workers)):
         return CheckStatus.WorkerWrongAssignment
 
-    if not all(work[i] / sum(effi[worker] for worker in group) <= time[i] for i, group in enumerate(assignment)):
+    if not all(w / effi[group].sum() <= t for w, t, group in zip(work, time, assignment)):
         return CheckStatus.TimeExceeded
 
     if abs(total_cost - sum(w * cost[group].sum() / effi[group].sum() for w, group in zip(work, assignment))) > eps:
