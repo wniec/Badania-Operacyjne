@@ -3,7 +3,7 @@ import cvxpy as cp
 
 from tqdm import tqdm
 from scipy.special import stirling2
-from more_itertools import set_partitions
+from utils import set_partitions
 
 
 def bf(
