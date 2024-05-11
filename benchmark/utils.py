@@ -61,8 +61,8 @@ def check_solution(
 
 
 def set_partitions(L: Iterable, k: int):
-    """Yields partitions of L into k non-empty sets represented by lists. This implementation
-    was taken from https://github.com/more-itertools/more-itertools.
+    """Yields partitions of L into k non-empty sets represented as a list of lists. This
+    implementation was taken from https://github.com/more-itertools/more-itertools.
 
     Args:
         L: Any finite iterable of length n >= k representing a set (i.e. order doesn't matter).
@@ -91,7 +91,7 @@ def set_partitions(L: Iterable, k: int):
 
 def sample_partition(n: int, k: int) -> list[list[int]]:
     """Implements a simple sampling scheme to sample uniformly a partition of set {0,..,n-1} into k
-    non-empty sets. The explanation of why this scheme works can be found here:
+    non-empty sets. An explanation of why this scheme works can be found here:
     https://mathoverflow.net/questions/141999/how-to-efficiently-sample-uniformly-from-the-set-of-p-partitions-of-an-n-set.
 
     Args:
@@ -99,7 +99,7 @@ def sample_partition(n: int, k: int) -> list[list[int]]:
         k: Number of partitions.
 
     Returns:
-        Random partition of set {0,..,n-1} into k non-empty sets represented as a list of lists.
+        Random partition of a set {0,..,n-1} into k non-empty sets represented as a list of lists.
     """
     assert n >= k >= 1, "Expected n >= k >= 1"
 
