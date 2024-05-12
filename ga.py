@@ -130,7 +130,7 @@ def ga(
     population = [encode(partition) for partition in population]
 
     for _ in (pbar := tqdm(range(max_iter))):
-        # Calculate fitness values for every candidate in population
+        # Compute fitness values for every candidate in population
         fitness = [objective(candidate) - penalty(candidate) for candidate in population]
 
         # Update the best assignment and fitness value found so far
