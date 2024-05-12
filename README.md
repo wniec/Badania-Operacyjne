@@ -27,6 +27,7 @@ tasks in such a way that:
 Clone this repository using
 ```
 $ git clone https://github.com/barhanc/or-proj.git
+$ cd or-proj
 ```
 then create virtual environment and install required dependencies using
 ```
