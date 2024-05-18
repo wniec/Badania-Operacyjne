@@ -1,5 +1,5 @@
 {
-    "ga": {
+    "params": {
         "work": [
             0.0564,
             0.5310,
@@ -23,10 +23,18 @@
             0.7561,
             0.1787,
             0.9503
-        ],
-        "max_iter": 100,
-        "pop_size": 100,
-        "rep_ratio": 0.1,
-        "penalty_c": 100.0
+        ]
+    },
+    "algorithms": {
+        "ga": {
+            "max_iter": 30,
+            "pop_size": 100,
+            "rep_ratio": 0.1,
+            "penalty_c": 100.0
+        },
+        "ba": {
+            "max_iter": 30,
+            "penalty_c": 100.0
+        }
     }
 }
