@@ -26,7 +26,6 @@
         ]
     },
     "algorithms": {
-        "bf": null,
         "ga": {
             "max_iter": 30,
             "pop_size": 100,
