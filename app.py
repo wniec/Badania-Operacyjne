@@ -9,22 +9,8 @@ from ga import ga
 from ba import ba
 from utils import CheckStatus, check_solution
 
-PARAMS = ["work", "time", "cost", "effi"]
-HYPER_PARAMS = {
-    "bf": [
-        "solver",
-    ],
-    "ga": [
-        "max_iter",
-        "pop_size",
-        "rep_ratio",
-        "penalty_c",
-    ],
-}
-
 class ParamsException(Exception):
     pass
-
 
 class BaseParams():
     def __init__(self) -> None:
