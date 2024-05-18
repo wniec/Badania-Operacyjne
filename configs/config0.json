@@ -26,14 +26,15 @@
         ]
     },
     "algorithms": {
+        "bf": null,
         "ga": {
-            "max_iter": 30,
+            "max_iter": 1,
             "pop_size": 100,
             "rep_ratio": 0.1,
             "penalty_c": 100.0
         },
         "ba": {
-            "max_iter": 30,
+            "max_iter": 1,
             "penalty_c": 100.0
         }
     }

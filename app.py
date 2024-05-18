@@ -116,7 +116,7 @@ if __name__ == "__main__":
         exit(1)
     
     if not os.path.isfile(argv[1]):
-        print("Invalid config path")
+        print(f"Invalid config path: {argv[1]}")
         exit(1)
     try:
         with open(argv[1], "r") as file:
