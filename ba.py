@@ -16,7 +16,14 @@ def ba(
     rest_attempts: int = 10,
     penalty_c: float = 100.0,
 ) -> tuple[float, list[list[int]]]:
-    """TODO: Write a docstring"""
+    """Returns an asiigment of workers to tasks that minimizes the cost function.
+    Parameter `max_iter` is the number of maximum iterations after which algorithm stops
+    `sol_size` is the maximum size of list of solutions at any iteration of algorithm
+    `top_frac` is the percentage of solutions that are considered superior
+    `top_attempts` is the number of bees assigned to to superior solutions
+    `rest attempts` is the number of bees that are assigned to inferior solutions
+    `penalty_c` is a parameter that is used to compute the final cost of solution 
+    than penalizes incorrect solutions"""
 
     assert all(isinstance(arr, np.ndarray) for arr in (work, time, cost, effi)), "Expected Numpy arrays"
     assert all(len(arr.shape) == 1 for arr in (work, time, cost, effi)), "Expected 1-D arrays"
@@ -63,7 +70,9 @@ def ba(
         return penalty_c * sum(max(0, w / effi[p].sum() - t) for w, t, p in zip(work, time, partition))
 
     def alter(solution: list[int], p: float = 0.5) -> list[int]:
-        """TODO: Write a docstring"""
+        """Returns random permutation of given list `solution`. This permutation is computed by
+        switching tasks of randomly chosen workers. Parameter `p` is the probability that two
+        randomly chosen workers switch their tasks."""
 
         _solution = solution.copy()
 
